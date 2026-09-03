@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "outDir": "out",
+    "rootDir": ".",
+    "noUnusedLocals": true,
+    "strict": false,
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules",
+    ".vscode-test",
+    "test",
+    "out",
+    "dist",
+    "**/__tests__/**",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
+}

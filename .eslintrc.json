@@ -1,0 +1,47 @@
+{
+  "root": true,
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "sourceType": "module", "ecmaVersion": 2020 },
+  "plugins": ["@typescript-eslint"],
+  "env": { "node": true, "es2020": true },
+  "ignorePatterns": [
+    "out/**",
+    "dist/**",
+    "node_modules/**",
+    "test/**",
+    "webpack.config.js",
+    "**/*.js"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "@typescript-eslint/no-this-alias": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ImportDeclaration[source.value=/^(lodash\\.debounce|ftp|p-queue)$/] > ImportNamespaceSpecifier",
+        "message": "Use a default import (`import x from '...'`), not `import * as x`. These are CommonJS modules whose module.exports is a bare function/class; under esModuleInterop a namespace import compiles to a non-callable object and throws at require time (silent activation crash - see 1.16.9 CHANGELOG)."
+      }
+    ],
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "no-constant-condition": ["error", { "checkLoops": false }],
+    "prefer-const": "warn",
+    "eqeqeq": ["warn", "smart"],
+    "no-var": "error",
+    "no-case-declarations": "warn",
+    "no-async-promise-executor": "warn",
+    "no-useless-escape": "warn",
+    "prefer-rest-params": "warn",
+    "prefer-spread": "warn"
+  }
+}

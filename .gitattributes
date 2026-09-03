@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+# Source tree stays CRLF to match upstream (Natizyskunk/vscode-sftp) so merges
+# from upstream stay clean. Config and docs are LF like everything else.
+src/** -text
+**/*.cmd text eol=crlf
+
+*.vsix binary
+*.png binary
+*.jpg binary
+*.gif binary
+*-lock.json linguist-generated=true -diff
