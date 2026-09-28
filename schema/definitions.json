@@ -92,6 +92,25 @@
           }
         }
       },
+      "placeholder": {
+        "type": "object",
+        "description": "Size placeholders: a remote file or folder over a size limit is not downloaded; an empty '<name>.placeholder' marker is left locally instead. While the marker exists and the original does not, that name is skipped in both directions (never uploaded, and not deleted from the remote by sync). If the original exists it syncs normally, and a 0-byte marker beside it is deleted. An explicit Download of a file/folder overrides its own marker. Each field falls back to the matching sftp.defaultPlaceholder* setting when omitted.",
+        "properties": {
+          "fileSize": {
+            "type": ["number", "string"],
+            "description": "Remote files larger than this get a placeholder instead of being downloaded. Bytes, or a string like \"500MB\". Empty / 0 = off."
+          },
+          "directorySize": {
+            "type": ["number", "string"],
+            "description": "Remote folders whose total size (recursive, minus ignored files) is larger than this get a placeholder instead of being downloaded. Bytes, or a string like \"2GB\". Empty / 0 = off."
+          },
+          "suffix": {
+            "type": "string",
+            "description": "Suffix appended to the original name to form the marker.",
+            "default": ".placeholder"
+          }
+        }
+      },
       "ignore": {
         "type": "array",
         "description": "Files to ignore, gitignore syntax. When omitted, SFTP falls back (in order) to: a .sftpignore file next to this config, then the central sftp.defaultIgnore setting.",

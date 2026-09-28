@@ -4,6 +4,18 @@ Maintained by Will Lotto ([xQx](https://github.com/will-lottkowitz-prism)), fork
 [Natizyskunk/vscode-sftp](https://github.com/Natizyskunk/vscode-sftp) at v1.16.3. Entries below
 1.16.3 are upstream history.
 
+### 1.17.0 - 2026-09-28
+* **Size placeholders.** New `placeholder` option (`fileSize`, `directorySize`,
+  `suffix`) in `.sftp.json`, with `sftp.defaultPlaceholderFileSize`,
+  `sftp.defaultPlaceholderDirectorySize`, `sftp.defaultPlaceholderSuffix` as
+  central defaults. A remote file/folder over the limit is not downloaded; an
+  empty `<name>.placeholder` marker is created locally instead. A marker with no
+  original skips that name in both directions (and stops `syncOption.delete`
+  removing the remote copy); an existing original always syncs, and a 0-byte
+  marker beside it is deleted. Only remote → local transfers create markers.
+  An explicit Download overrides the marker for that path. Marker-suffixed files
+  are never transferred while the feature is on.
+
 ### 1.16.9 - 2026-09-03
 * **Fix: extension failed to activate (1.16.7 / 1.16.8).** The `esModuleInterop`
   toolchain change wrapped three untyped CommonJS deps (`lodash.debounce`,

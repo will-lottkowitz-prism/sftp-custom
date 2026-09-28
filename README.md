@@ -417,6 +417,9 @@ changing a setting takes effect on the next operation without reloading.
 | `sftp.defaultConnectTimeout` | `connectTimeout` | `10000` | Milliseconds to wait for a connection |
 | `sftp.defaultInteractiveAuth` | `interactiveAuth` | `false` | Always offer keyboard-interactive (2FA) as well |
 | `sftp.defaultConcurrency` | `concurrency` | `4` | Parallel transfers per folder/project operation (FTP is always 1) |
+| `sftp.defaultPlaceholderFileSize` | `placeholder.fileSize` | _off_ | Remote files larger than this (`500MB`) are not downloaded — see [Size placeholders](#size-placeholders) |
+| `sftp.defaultPlaceholderDirectorySize` | `placeholder.directorySize` | _off_ | Same for folders, by recursive total size (`2GB`) |
+| `sftp.defaultPlaceholderSuffix` | `placeholder.suffix` | `.placeholder` | Marker suffix |
 
 ### Ignore list
 
@@ -440,6 +443,30 @@ servers/example-host/compose/
 ├── .sftp.json        →  { "host": "example-host.lan", "remotePath": "/opt/docker/compose" }
 └── .sftpignore       →  node_modules/  vendor/  .env  (overrides sftp.defaultIgnore for this tree)
 ```
+
+### Size placeholders
+
+Set a size limit and big remote files/folders are **not downloaded**. An empty
+`<name>.placeholder` marker is left locally instead, so you can see it exists.
+
+```json
+{ "placeholder": { "fileSize": "500MB", "directorySize": "2GB" } }
+```
+
+(or the `sftp.defaultPlaceholder*` settings). Sizes are bytes or a string with a unit.
+
+| Local state | What sync does |
+| --- | --- |
+| `big.iso.placeholder` only | Skips `big.iso` in **both** directions — never uploaded, never re-downloaded, never deleted from the remote by `syncOption.delete` |
+| `big.iso` only | Syncs normally, however big |
+| `big.iso` + a 0-byte marker | Deletes the marker, syncs the file |
+| `big.iso` + a marker with content | Syncs the file, leaves the marker |
+
+Only remote → local transfers create markers (uploads are never limited). To get a
+placeholdered file, run **Download** on it — an explicit Download overrides that path's own
+marker. Deleting the marker alone is not enough; the next sync would create it again. While
+the feature is on, files ending in the suffix are never transferred. Full reference:
+[`placeholder`](docs/common_configuration.md#placeholder).
 
 ### Putting it together — a minimal in-path config
 

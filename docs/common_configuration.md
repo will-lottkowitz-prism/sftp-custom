@@ -237,6 +237,46 @@ Update the destination only if a newer version is on the source filesystem.
 }
 ```
 
+### placeholder
+Skip downloading big files and folders. A remote file or folder over a size limit is **not
+downloaded**; an empty `<name>.placeholder` marker is created locally instead.
+
+| Key | Value | Default |
+| --- | --- | --- |
+| *placeholder.fileSize* | *bytes, or a string such as `"500MB"`* | *off* |
+| *placeholder.directorySize* | *bytes, or a string such as `"2GB"`* | *off* |
+| *placeholder.suffix* | *string* | `".placeholder"` |
+
+Each field falls back to the matching `sftp.defaultPlaceholder*` VS Code setting when omitted.
+`0` or an empty string turns that limit off; the feature is on when at least one limit is set.
+Sizes are "larger than" (a file exactly at the limit still downloads). A folder's size is the
+recursive total of its non-ignored files, measured by listing it on the server and stopping as
+soon as the limit is passed.
+
+```json
+{
+  "placeholder": {
+    "fileSize": "500MB",
+    "directorySize": "2GB"
+  }
+}
+```
+
+Rules:
+
+* Marker exists and the original does not: that name is skipped in **both** directions. It is
+  never uploaded, never re-downloaded, and `syncOption.delete` will not delete the remote copy.
+* The original exists (with or without a marker): it syncs normally, however big it is. A
+  **0-byte** marker beside it is deleted; a marker with content is left alone.
+* Only remote → local transfers create markers, and only for names that do not exist locally.
+  Uploads are never limited.
+* To get a placeholdered file, run **Download** on it (an explicit Download overrides that
+  path's own marker and removes it), or copy the real file into place. Deleting the marker alone
+  is not enough: the next sync sees a big remote file and creates it again.
+* Downloading a placeholdered *folder* creates the folder and applies the limits to its contents,
+  so big children get their own markers.
+* Files ending in the suffix are never transferred while the feature is on.
+
 ### ignore
 Ignore can be used to ignore files and folders from sync, and even supports wildcards using `*`. <br>
 This is the same behavior as gitignore, all paths relative to context of the current configuration.

@@ -55,6 +55,9 @@ for the full explanation. All are under the `sftp.` prefix and edited in the
 | `sftp.defaultConnectTimeout` | number (ms) | `10000` | `connectTimeout` |
 | `sftp.defaultInteractiveAuth` | boolean | `false` | `interactiveAuth` |
 | `sftp.defaultConcurrency` | number | `4` | `concurrency` |
+| `sftp.defaultPlaceholderFileSize` | string (bytes or `500MB`) | `""` | `placeholder.fileSize` |
+| `sftp.defaultPlaceholderDirectorySize` | string (bytes or `2GB`) | `""` | `placeholder.directorySize` |
+| `sftp.defaultPlaceholderSuffix` | string | `".placeholder"` | `placeholder.suffix` |
 
 `username` is not a setting: when omitted from a config (and from any
 `~/.ssh/config` / `remotefs.remote` it resolves through) it defaults to the OS

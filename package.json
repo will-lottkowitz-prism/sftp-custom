@@ -2,7 +2,7 @@
   "name": "sftp-custom",
   "displayName": "SFTP (Custom)",
   "description": "SFTP/FTP sync for VS Code. xQx fork of Natizyskunk/vscode-sftp.",
-  "version": "1.16.9",
+  "version": "1.17.0",
   "publisher": "xQx",
   "author": {
     "name": "Will Lotto",
@@ -164,6 +164,27 @@
           "default": 4,
           "order": 11,
           "markdownDescription": "Default for `concurrency` — how many files are transferred in parallel during a folder / project upload or download. Lower it (e.g. `1`) for servers that rate-limit or drop parallel SFTP channels; raise it for fast links. FTP always uses `1`. Override per server with `\"concurrency\"`."
+        },
+        "sftp.defaultPlaceholderFileSize": {
+          "type": "string",
+          "default": "",
+          "pattern": "^\\s*(\\d+(\\.\\d+)?\\s*([bB]|[kKmMgGtT][bB])?)?\\s*$",
+          "order": 12,
+          "markdownDescription": "Default for `placeholder.fileSize`. A remote file larger than this is **not downloaded**; an empty `<name>.placeholder` marker is created locally instead, and while it exists (and the real file does not) that name is skipped in both directions. Accepts bytes or a unit, e.g. `500MB`, `1.5GB`. Empty = off. Delete the marker and **Download** the file (or just copy the real file in) to get it; a 0-byte marker next to a real file is deleted on the next sync."
+        },
+        "sftp.defaultPlaceholderDirectorySize": {
+          "type": "string",
+          "default": "",
+          "pattern": "^\\s*(\\d+(\\.\\d+)?\\s*([bB]|[kKmMgGtT][bB])?)?\\s*$",
+          "order": 13,
+          "markdownDescription": "Default for `placeholder.directorySize`. A remote folder whose total size (recursive, ignored files excluded) is larger than this is not downloaded; a `<name>.placeholder` marker is created instead. Measuring lists the folder over the connection, stopping as soon as the limit is passed. Accepts bytes or a unit, e.g. `2GB`. Empty = off."
+        },
+        "sftp.defaultPlaceholderSuffix": {
+          "type": "string",
+          "default": ".placeholder",
+          "pattern": "^[^\\\\/]+$",
+          "order": 14,
+          "markdownDescription": "Default for `placeholder.suffix` — appended to the original file/folder name to form the marker. Files with this suffix are never transferred while placeholders are enabled."
         },
         "sftp.printDebugLog": {
           "type": "boolean",

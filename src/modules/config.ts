@@ -5,8 +5,15 @@ import * as Joi from 'joi';
 import { CONFIG_PATH } from '../constants';
 import { reportError } from '../helper';
 import { showTextDocument } from '../host';
+import { SIZE_PATTERN } from '../core/placeholder';
 
 const nullable = schema => schema.optional().allow(null);
+
+// bytes, or a string such as "500MB"; empty / 0 disables
+const placeholderSize = Joi.alternatives([
+  Joi.number().min(0),
+  Joi.string().allow('').regex(SIZE_PATTERN),
+]);
 
 const configScheme = {
   name: Joi.string(),
@@ -62,6 +69,12 @@ const configScheme = {
     update: Joi.boolean(),
   },
   remoteTimeOffsetInHours: Joi.number(),
+
+  placeholder: {
+    fileSize: placeholderSize,
+    directorySize: placeholderSize,
+    suffix: Joi.string().regex(/^[^\\/]+$/),
+  },
 
   remoteExplorer: {
     filesExclude: Joi.array()

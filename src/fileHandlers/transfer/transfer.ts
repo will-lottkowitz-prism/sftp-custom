@@ -11,8 +11,12 @@ import { FileHandleOption } from '../option';
 import { flatten } from '../../utils';
 import logger from '../../logger';
 import { getOpenTextDocuments } from '../../host';
+import { PlaceholderOption, applyPlaceholders, removePlaceholderFor } from '../../core/placeholder';
 
-interface InternalTransferOption extends FileHandleOption, TransferTaskTransferOption {}
+interface InternalTransferOption extends FileHandleOption, TransferTaskTransferOption {
+  // size placeholders; undefined = feature off
+  placeholder?: PlaceholderOption;
+}
 
 type ExternalTransferOption<T extends InternalTransferOption> = Pick<
   T,
@@ -89,7 +93,26 @@ async function transferFolder(
     targetFs.chmod(targetFsPath, parseInt(String(config.transferOption.dirPerm), 8))
   }
 
-  const fileEntries = await srcFs.list(srcFsPath);
+  let fileEntries = await srcFs.list(srcFsPath);
+  if (transferOption.placeholder) {
+    const srcIsLocal = config.transferDirection === TransferDirection.LOCAL_TO_REMOTE;
+    // only a download needs the local listing (existing files and markers)
+    const desListing = srcIsLocal ? [] : await targetFs.list(targetFsPath).catch(() => []);
+    ({ src: fileEntries } = await applyPlaceholders(
+      {
+        option: transferOption.placeholder,
+        srcFs,
+        srcDir: srcFsPath,
+        desFs: targetFs,
+        desDir: targetFsPath,
+        srcIsLocal,
+        allowCreate: true,
+        ignore: transferOption.ignore,
+      },
+      fileEntries,
+      desListing
+    ));
+  }
   await Promise.all(
     fileEntries.map(file =>
       transferWithType(
@@ -412,11 +435,29 @@ async function _sync(
   // create dir here so we don't have to ensure it for children files.
   await targetFs.ensureDir(targetFsPath);
 
-  const files = await Promise.all([
+  let [srcEntries, desEntries] = await Promise.all([
     srcFs.list(srcFsPath).catch(err => []),
     targetFs.list(targetFsPath).catch(err => []),
   ]);
-  await syncFiles(...files);
+  if (transferOption.placeholder) {
+    ({ src: srcEntries, des: desEntries } = await applyPlaceholders(
+      {
+        option: transferOption.placeholder,
+        srcFs,
+        srcDir: srcFsPath,
+        desFs: targetFs,
+        desDir: targetFsPath,
+        srcIsLocal: transferDirection === TransferDirection.LOCAL_TO_REMOTE,
+        allowCreate: !transferOption.skipCreate,
+        bothDirections: transferOption.bothDiretions,
+        prune: transferOption.delete,
+        ignore: transferOption.ignore,
+      },
+      srcEntries,
+      desEntries
+    ));
+  }
+  await syncFiles(srcEntries, desEntries);
 }
 
 export { TransferOption, SyncOption, TransferDirection };
@@ -426,6 +467,10 @@ export async function transfer(
   collect: (t: TransferTask) => void
 ) {
   const stat = await config.srcFs.lstat(config.srcFsPath);
+  // an explicit download of a path overrides its placeholder, else the next sync would just recreate it
+  if (config.transferOption.placeholder && config.transferDirection === TransferDirection.REMOTE_TO_LOCAL) {
+    await removePlaceholderFor(config.targetFs, config.targetFsPath, config.transferOption.placeholder);
+  }
   const transferOption = {
     ...config.transferOption,
     fallbackMode: stat.mode,

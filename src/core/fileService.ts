@@ -15,6 +15,13 @@ import Scheduler from './scheduler';
 import { createRemoteIfNoneExist, removeRemoteFs } from './remoteFs';
 import TransferTask from './transferTask';
 import localFs from './localFs';
+import {
+  PlaceholderConfig,
+  DEFAULT_PLACEHOLDER_SUFFIX,
+  createPlaceholderOption,
+  isPlaceholderPath,
+  parseSize,
+} from './placeholder';
 
 type Omit<T, U> = Pick<T, Exclude<keyof T, U>>;
 
@@ -57,6 +64,7 @@ interface ServiceOption {
   };
   remoteTimeOffsetInHours: number;
   limitOpenFilesOnRemote: number | true;
+  placeholder?: PlaceholderConfig;
 }
 
 interface WatcherConfig {
@@ -159,6 +167,7 @@ function getHostInfo(config) {
     'concurrency',
     'syncOption',
     'sshConfigPath',
+    'placeholder',
   ];
 
   return Object.keys(config).reduce((obj, key) => {
@@ -343,6 +352,20 @@ function applySettingDefaults(config: any): void {
   fillIfUnset('connectTimeout', setting.get<number>('defaultConnectTimeout', 10000));
   fillIfUnset('interactiveAuth', setting.get<boolean>('defaultInteractiveAuth', false));
   fillIfUnset('concurrency', setting.get<number>('defaultConcurrency', 4));
+
+  // field-by-field: a config may override just one of the three
+  const placeholderDefaults = {
+    fileSize: setting.get<string>('defaultPlaceholderFileSize', ''),
+    directorySize: setting.get<string>('defaultPlaceholderDirectorySize', ''),
+    suffix: setting.get<string>('defaultPlaceholderSuffix', DEFAULT_PLACEHOLDER_SUFFIX),
+  };
+  for (const key of ['fileSize', 'directorySize']) {
+    if (parseSize(placeholderDefaults[key]) === undefined) {
+      logger.warn(`sftp.defaultPlaceholder* setting "${key}" is not a valid size (${placeholderDefaults[key]}); ignoring it.`);
+      placeholderDefaults[key] = '';
+    }
+  }
+  config.placeholder = { ...placeholderDefaults, ...config.placeholder };
 }
 
 function configHasExplicitAuth(config: any): boolean {
@@ -471,6 +494,8 @@ function mergeProfile(
   for (const key of keys) {
     if (key === 'ignore') {
       res.ignore = res.ignore.concat(source.ignore);
+    } else if (key === 'placeholder') {
+      res.placeholder = { ...res.placeholder, ...source.placeholder };
     } else {
       res[key] = source[key];
     }
@@ -753,12 +778,21 @@ export default class FileService {
     const remoteContext = config.remotePath;
 
     const ignoreConfig = filesIgnoredFromConfig(config);
-    if (ignoreConfig.length <= 0) {
+    // placeholder markers are local bookkeeping: never transferred or deleted remotely
+    const placeholder = createPlaceholderOption(config.placeholder);
+    if (ignoreConfig.length <= 0 && !placeholder) {
       return null;
     }
 
-    const ignore = Ignore.from(ignoreConfig);
+    const ignore = ignoreConfig.length > 0 ? Ignore.from(ignoreConfig) : null;
     const ignoreFunc = fsPath => {
+      if (placeholder && isPlaceholderPath(fsPath, placeholder)) {
+        return true;
+      }
+      if (!ignore) {
+        return false;
+      }
+
       // vscode will always return path with / as separator
       const normalizedPath = path.normalize(fsPath);
       let relativePath;

@@ -1,5 +1,6 @@
 import { refreshRemoteExplorer } from '../shared';
 import createFileHandler, { FileHandlerContext } from '../createFileHandler';
+import { createPlaceholderOption } from '../../core/placeholder';
 import { transfer, sync, TransferOption, SyncOption, TransferDirection } from './transfer';
 
 function createTransferHandle(direction: TransferDirection) {
@@ -72,6 +73,7 @@ export const sync2Remote = createFileHandler<SyncOption>({
       openSsh: config.openSsh,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
       delete: syncOption.delete,
       skipCreate: syncOption.skipCreate,
       ignoreExisting: syncOption.ignoreExisting,
@@ -110,6 +112,7 @@ export const sync2Local = createFileHandler<SyncOption>({
       perserveTargetMode: false,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
       delete: syncOption.delete,
       skipCreate: syncOption.skipCreate,
       ignoreExisting: syncOption.ignoreExisting,
@@ -129,6 +132,7 @@ export const upload = createFileHandler<TransferOption>({
       openSsh: config.openSsh,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
     };
   },
   afterHandle() {
@@ -147,6 +151,7 @@ export const uploadFile = createFileHandler<TransferOption>({
       openSsh: config.openSsh,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
     };
   },
   afterHandle() {
@@ -165,6 +170,7 @@ export const uploadFolder = createFileHandler<TransferOption>({
       openSsh: config.openSsh,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
     };
   },
   afterHandle() {
@@ -181,6 +187,7 @@ export const download = createFileHandler<TransferOption>({
       perserveTargetMode: false,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
     };
   },
 });
@@ -194,6 +201,7 @@ export const downloadFile = createFileHandler<TransferOption>({
       perserveTargetMode: false,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
     };
   },
 });
@@ -207,6 +215,7 @@ export const downloadFolder = createFileHandler<TransferOption>({
       perserveTargetMode: false,
       // remoteTimeOffsetInHours: config.remoteTimeOffsetInHours,
       ignore: config.ignore,
+      placeholder: createPlaceholderOption(config.placeholder),
     };
   },
 });
