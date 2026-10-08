@@ -2,7 +2,7 @@
   "name": "sftp-custom",
   "displayName": "SFTP (Custom)",
   "description": "SFTP/FTP sync for VS Code. xQx fork of Natizyskunk/vscode-sftp.",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "publisher": "xQx",
   "author": {
     "name": "Will Lotto",
@@ -167,17 +167,17 @@
         },
         "sftp.defaultPlaceholderFileSize": {
           "type": "string",
-          "default": "",
+          "default": "1GB",
           "pattern": "^\\s*(\\d+(\\.\\d+)?\\s*([bB]|[kKmMgGtT][bB])?)?\\s*$",
           "order": 12,
-          "markdownDescription": "Default for `placeholder.fileSize`. A remote file larger than this is **not downloaded**; an empty `<name>.placeholder` marker is created locally instead, and while it exists (and the real file does not) that name is skipped in both directions. Accepts bytes or a unit, e.g. `500MB`, `1.5GB`. Empty = off. Delete the marker and **Download** the file (or just copy the real file in) to get it; a 0-byte marker next to a real file is deleted on the next sync."
+          "markdownDescription": "Default for `placeholder.fileSize`. A remote file larger than this is **not downloaded**; an empty `<name>.placeholder` marker is created locally instead, and while it exists (and the real file does not) that name is skipped in both directions. Accepts bytes or a unit, e.g. `500MB`, `1.5GB`. Default `1GB`; empty = off. Delete the marker and **Download** the file (or just copy the real file in) to get it; a 0-byte marker next to a real file is deleted on the next sync."
         },
         "sftp.defaultPlaceholderDirectorySize": {
           "type": "string",
-          "default": "",
+          "default": "10GB",
           "pattern": "^\\s*(\\d+(\\.\\d+)?\\s*([bB]|[kKmMgGtT][bB])?)?\\s*$",
           "order": 13,
-          "markdownDescription": "Default for `placeholder.directorySize`. A remote folder whose total size (recursive, ignored files excluded) is larger than this is not downloaded; a `<name>.placeholder` marker is created instead. Measuring lists the folder over the connection, stopping as soon as the limit is passed. Accepts bytes or a unit, e.g. `2GB`. Empty = off."
+          "markdownDescription": "Default for `placeholder.directorySize`. A remote folder whose total size (recursive, ignored files excluded) is larger than this is not downloaded; a `<name>.placeholder` marker is created instead. Measuring lists the folder over the connection, stopping as soon as the limit is passed. Accepts bytes or a unit, e.g. `2GB`. Default `10GB`; empty = off."
         },
         "sftp.defaultPlaceholderSuffix": {
           "type": "string",

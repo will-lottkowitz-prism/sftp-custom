@@ -355,8 +355,8 @@ function applySettingDefaults(config: any): void {
 
   // field-by-field: a config may override just one of the three
   const placeholderDefaults = {
-    fileSize: setting.get<string>('defaultPlaceholderFileSize', ''),
-    directorySize: setting.get<string>('defaultPlaceholderDirectorySize', ''),
+    fileSize: setting.get<string>('defaultPlaceholderFileSize', '1GB'),
+    directorySize: setting.get<string>('defaultPlaceholderDirectorySize', '10GB'),
     suffix: setting.get<string>('defaultPlaceholderSuffix', DEFAULT_PLACEHOLDER_SUFFIX),
   };
   for (const key of ['fileSize', 'directorySize']) {

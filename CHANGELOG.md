@@ -4,6 +4,11 @@ Maintained by Will Lotto ([xQx](https://github.com/will-lottkowitz-prism)), fork
 [Natizyskunk/vscode-sftp](https://github.com/Natizyskunk/vscode-sftp) at v1.16.3. Entries below
 1.16.3 are upstream history.
 
+### 1.17.1 — 2026-10-08
+
+- Size placeholders now on by default: sftp.defaultPlaceholderFileSize 1GB, sftp.defaultPlaceholderDirectorySize 10GB (set empty to disable).
+
+
 ### 1.17.0 - 2026-09-28
 * **Size placeholders.** New `placeholder` option (`fileSize`, `directorySize`,
   `suffix`) in `.sftp.json`, with `sftp.defaultPlaceholderFileSize`,
@@ -15,6 +20,8 @@ Maintained by Will Lotto ([xQx](https://github.com/will-lottkowitz-prism)), fork
   marker beside it is deleted. Only remote → local transfers create markers.
   An explicit Download overrides the marker for that path. Marker-suffixed files
   are never transferred while the feature is on.
+* **Placeholder defaults on.** `sftp.defaultPlaceholderFileSize` now defaults to `1GB` and
+  `sftp.defaultPlaceholderDirectorySize` to `10GB` (were off). Set either to an empty string to disable.
 
 ### 1.16.9 - 2026-09-03
 * **Fix: extension failed to activate (1.16.7 / 1.16.8).** The `esModuleInterop`

@@ -417,8 +417,8 @@ changing a setting takes effect on the next operation without reloading.
 | `sftp.defaultConnectTimeout` | `connectTimeout` | `10000` | Milliseconds to wait for a connection |
 | `sftp.defaultInteractiveAuth` | `interactiveAuth` | `false` | Always offer keyboard-interactive (2FA) as well |
 | `sftp.defaultConcurrency` | `concurrency` | `4` | Parallel transfers per folder/project operation (FTP is always 1) |
-| `sftp.defaultPlaceholderFileSize` | `placeholder.fileSize` | _off_ | Remote files larger than this (`500MB`) are not downloaded — see [Size placeholders](#size-placeholders) |
-| `sftp.defaultPlaceholderDirectorySize` | `placeholder.directorySize` | _off_ | Same for folders, by recursive total size (`2GB`) |
+| `sftp.defaultPlaceholderFileSize` | `placeholder.fileSize` | `1GB` | Remote files larger than this (`500MB`) are not downloaded — see [Size placeholders](#size-placeholders) |
+| `sftp.defaultPlaceholderDirectorySize` | `placeholder.directorySize` | `10GB` | Same for folders, by recursive total size (`2GB`) |
 | `sftp.defaultPlaceholderSuffix` | `placeholder.suffix` | `.placeholder` | Marker suffix |
 
 ### Ignore list

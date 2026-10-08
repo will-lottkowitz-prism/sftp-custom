@@ -243,8 +243,8 @@ downloaded**; an empty `<name>.placeholder` marker is created locally instead.
 
 | Key | Value | Default |
 | --- | --- | --- |
-| *placeholder.fileSize* | *bytes, or a string such as `"500MB"`* | *off* |
-| *placeholder.directorySize* | *bytes, or a string such as `"2GB"`* | *off* |
+| *placeholder.fileSize* | *bytes, or a string such as `"500MB"`* | *`sftp.defaultPlaceholderFileSize` (1GB)* |
+| *placeholder.directorySize* | *bytes, or a string such as `"2GB"`* | *`sftp.defaultPlaceholderDirectorySize` (10GB)* |
 | *placeholder.suffix* | *string* | `".placeholder"` |
 
 Each field falls back to the matching `sftp.defaultPlaceholder*` VS Code setting when omitted.
