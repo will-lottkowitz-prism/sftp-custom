@@ -4,6 +4,13 @@ Maintained by Will Lotto ([xQx](https://github.com/will-lottkowitz-prism)), fork
 [Natizyskunk/vscode-sftp](https://github.com/Natizyskunk/vscode-sftp) at v1.16.3. Entries below
 1.16.3 are upstream history.
 
+### 1.17.2 — 2026-10-08
+* **One-time notice when a size limit first triggers.** Placeholders are on by
+  default (1GB file / 10GB folder), so the first skipped download of a session
+  now shows a message with an *Open Settings* shortcut instead of only logging.
+* The default sizes are single constants shared with `package.json`; a test fails
+  if the settings UI default and the code fallback ever differ.
+
 ### 1.17.1 — 2026-10-08
 
 - Size placeholders now on by default: sftp.defaultPlaceholderFileSize 1GB, sftp.defaultPlaceholderDirectorySize 10GB (set empty to disable).

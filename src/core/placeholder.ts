@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import logger from '../logger';
 import { FileEntry, FileSystem, FileType } from './fs';
 
@@ -7,6 +8,9 @@ import { FileEntry, FileSystem, FileType } from './fs';
 //   - original present             -> syncs normally; a 0-byte marker beside it is stale and removed
 
 export const DEFAULT_PLACEHOLDER_SUFFIX = '.placeholder';
+// Out-of-the-box limits (package.json `default`s must match; see placeholder-defaults-test).
+export const DEFAULT_PLACEHOLDER_FILE_SIZE = '1GB';
+export const DEFAULT_PLACEHOLDER_DIRECTORY_SIZE = '10GB';
 
 // number of bytes, or a string such as "500MB" / "1.5 GB". Empty or 0 disables.
 export type PlaceholderSize = number | string;
@@ -178,10 +182,38 @@ async function exceedsLimit(
   return false;
 }
 
+// The limits are on by default, so the first skipped download of a session is
+// surfaced once; otherwise a big file silently "not syncing" looks like a bug.
+let placeholderNoticeShown = false;
+
+function announceFirstPlaceholder(fsPath: string) {
+  if (placeholderNoticeShown) {
+    return;
+  }
+  placeholderNoticeShown = true;
+  try {
+    const name = fsPath.split(/[\\/]/).pop();
+    Promise.resolve(
+      vscode.window.showInformationMessage(
+        `SFTP: "${name}" is over the size limit and was not downloaded; an empty marker was left instead. ` +
+          `Limits are set by sftp.defaultPlaceholderFileSize / sftp.defaultPlaceholderDirectorySize (empty = off).`,
+        'Open Settings'
+      )
+    ).then(choice => {
+      if (choice === 'Open Settings') {
+        vscode.commands.executeCommand('workbench.action.openSettings', 'sftp.defaultPlaceholder');
+      }
+    });
+  } catch (err) {
+    logger.warn(`could not show the placeholder notice: ${err.message}`);
+  }
+}
+
 async function createPlaceholder(fs: FileSystem, fsPath: string) {
   try {
     await fs.close(await fs.open(fsPath, 'w'));
     logger.info(`placeholder created ${fsPath}`);
+    announceFirstPlaceholder(fsPath);
   } catch (err) {
     logger.warn(`could not create placeholder ${fsPath}: ${err.message}`);
   }

@@ -2,7 +2,7 @@
   "name": "sftp-custom",
   "displayName": "SFTP (Custom)",
   "description": "SFTP/FTP sync for VS Code. xQx fork of Natizyskunk/vscode-sftp.",
-  "version": "1.17.1",
+  "version": "1.17.2",
   "publisher": "xQx",
   "author": {
     "name": "Will Lotto",

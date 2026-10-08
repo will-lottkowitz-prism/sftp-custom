@@ -17,6 +17,8 @@ import TransferTask from './transferTask';
 import localFs from './localFs';
 import {
   PlaceholderConfig,
+  DEFAULT_PLACEHOLDER_DIRECTORY_SIZE,
+  DEFAULT_PLACEHOLDER_FILE_SIZE,
   DEFAULT_PLACEHOLDER_SUFFIX,
   createPlaceholderOption,
   isPlaceholderPath,
@@ -355,8 +357,8 @@ function applySettingDefaults(config: any): void {
 
   // field-by-field: a config may override just one of the three
   const placeholderDefaults = {
-    fileSize: setting.get<string>('defaultPlaceholderFileSize', '1GB'),
-    directorySize: setting.get<string>('defaultPlaceholderDirectorySize', '10GB'),
+    fileSize: setting.get<string>('defaultPlaceholderFileSize', DEFAULT_PLACEHOLDER_FILE_SIZE),
+    directorySize: setting.get<string>('defaultPlaceholderDirectorySize', DEFAULT_PLACEHOLDER_DIRECTORY_SIZE),
     suffix: setting.get<string>('defaultPlaceholderSuffix', DEFAULT_PLACEHOLDER_SUFFIX),
   };
   for (const key of ['fileSize', 'directorySize']) {
